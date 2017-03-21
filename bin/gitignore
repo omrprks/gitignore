@@ -61,5 +61,5 @@ unless ARGV.length > 0
 else
 	File.open($out, ($overwrite ? "w" : "a") + "b")
 		.write(open(Gitignore::url + ARGV.map! { |_| _.strip }.sort.uniq.join(',')).read)
-	puts "Done: #{$out}"
+	puts "Done: #{$out}".green
 end
