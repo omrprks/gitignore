@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-Dir["./lib/*.rb"].each { |_| require "./lib/#{File.basename(_, File.extname(_))}" }
+Dir["#{File.dirname(__FILE__)}/../lib/*.rb"].each do |_|
+	require "#{File.dirname(_)}/#{File.basename(_, File.extname(_))}"
+end
 
 require "open-uri"
 require "getoptlong"
