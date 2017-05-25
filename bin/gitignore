@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 
-Dir["#{File.dirname(__FILE__)}/../lib/*.rb"].each do |_|
+# Fails to load when symlinking binary
+# Dir["#{File.dirname(__FILE__)}/../lib/*.rb"].each do |_|
+Dir["../lib/*.rb"].each do |_|
 	require "#{File.dirname(_)}/#{File.basename(_, File.extname(_))}"
 end
 
