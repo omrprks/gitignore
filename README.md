@@ -1,6 +1,7 @@
 # Gitignore
 Simple command-line program written in Ruby that generates .gitignore files using the http://gitignore.io/ API.
-Currently requires an active internet connection to use.
+
+Currently requires an active connection to the internet.
 
 ### Usage
 > Usage: gitignore [OPTION] args  
