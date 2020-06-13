@@ -3,7 +3,7 @@
 
 NOTE: Currently requires an active connection to the internet.
 
-### Usage
+## Usage
 > Usage: gitignore [OPTION] args
 > Generate .gitignore file using gitignore.io API.
 >
