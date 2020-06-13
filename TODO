@@ -1,2 +1,0 @@
-# TODO:
-	# - Generate .gitignore file based on local files in /lib/gitignore folder as opposed to using gitignore.io API, thus allowing offline usage.
