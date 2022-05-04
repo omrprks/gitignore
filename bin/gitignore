@@ -1,66 +1,47 @@
 #!/usr/bin/env ruby
 
-Dir["#{File.symlink?(__FILE__) ? File.dirname(File.readlink(__FILE__)) : File.dirname(__FILE__)}/../lib/*.rb"].each do |_|
-	require "#{File.dirname(_)}/#{File.basename(_, File.extname(_))}"
+require 'getoptlong'
+
+require_files = "#{File.symlink?(__FILE__) ? File.dirname(File.readlink(__FILE__)) : File.dirname(__FILE__)}/../lib/*.rb"
+
+Dir[require_files].each do |file|
+  require "#{File.dirname(file)}/#{File.basename(file, File.extname(file))}"
 end
 
-require "open-uri"
-require "getoptlong"
+gitignore = Gitignore.new()
 
-$out = ".gitignore"
-$overwrite = false
-$USAGE =
-"Usage: gitignore [OPTION] args
-Generate .gitignore file using gitignore.io API.
-
-Output will be appended if .gitignore file exists in current directory.
-
-options:
-	-o, --out	output filename (default: \".gitignore\")
-	    --overwrite	overwrite current .gitignore file (if exists)
-		--show	output .gitignore file in current directory (if exists)
-	-V, --version	output version information
-	    --help	displays this help (\"-h\" for short message)
-
-	args:
-		.gitignore profiles (ex: Ruby, Rails, C, C++)
-	example:
-		$ gitignore Ruby Rails VisualStudioCode"
-
-$opts = GetoptLong.new(
-	["--help", GetoptLong::NO_ARGUMENT],
-	["--version", "-V", GetoptLong::NO_ARGUMENT],
-	["--list", GetoptLong::NO_ARGUMENT],
-	["--show", GetoptLong::NO_ARGUMENT],
-	["--out", "-o", GetoptLong::REQUIRED_ARGUMENT],
-	["--overwrite", GetoptLong::NO_ARGUMENT],
-)
+$opts = GetoptLong.new(*gitignore.opts)
 
 $opts.each do |opt, arg|
 	case opt
-		when "--help"
-			puts "#{$USAGE}"
-			exit 1
+		when '--help'
+			puts gitignore.usage
+			exit 0
 		when '--version'
-			puts "gitignore"
-			exit 1
+			puts 'gitignore version ' + Gitignore::VERSION
+			exit 0
 		when '--list'
-			Gitignore::list
-			exit 1
+			gitignore.list
+			exit 0
 		when '--show'
-			Gitignore::show($out)
-			exit 1
-		when "--out"; $out = arg.chomp.to_s
-		when "--overwrite"; $overwrite = true
+			gitignore.show
+			exit 0
+		when '--out'
+      gitignore.out = arg.chomp.to_s
+		when '--overwrite'
+      gitignore.overwrite = true
+    when '--destroy'
+      gitignore.destroy
+      exit 0
 	end
 end
 
 unless ARGV.length > 0
-	puts Dir["../lib/*.rb"]
-	puts "No Input".red, "#{$USAGE}"
-	exit 1
-else
-	File.open($out, ($overwrite ? "w" : "a") + "b")
-		.write(open(Gitignore::url + ARGV.map! { |_| _.strip }.sort.uniq.join(',')).read)
-	puts "Done: #{$out}".green
+  puts gitignore.usage
+  exit 1
 end
+
+types = ARGV.map! { |_| _.strip }.sort.uniq
+gitignore.generate(types)
+
+puts "Done: #{gitignore.out}".green + "\n" + types.join(',')

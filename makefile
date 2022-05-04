@@ -2,7 +2,7 @@
 
 SCRIPT=bin/gitignore
 SRC=$(abspath ${SCRIPT})
-OUT=$(notdir ${SCRIPT})
+OUT=$(notdir "git-ignore")
 SPELLS_DIR=${HOME}/spells
 
 all:
